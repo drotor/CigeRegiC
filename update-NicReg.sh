@@ -1,100 +1,108 @@
 #!/usr/bin/env bash
 
+dt=$(date '+%Y%m%dT%H%M')
+LogFile="/home/mike/tmp/logs/NicReg_${dt}.log"
+touch $LogFile
+
+echo "******** Start `date` ********" >> $LogFile
+
 pushd /home/mike/Projects/Programming/BashScript/CigeRegiC/
-echo
-echo "***git stash push***"
-git stash push
-echo
-echo "***git fetch***"
-git fetch
-# need to check for sucess
+echo >> $LogFile
+echo "***git stash push***" | tee -a $LogFile
+git stash push >> $LogFile
+echo >> $LogFile
+echo "***git fetch***" | tee -a $LogFile
+git fetch >> $LogFile
+# need to check for success
 if [ $? != 0 ]
 then
-  echo Fetch FAILED\!\!\!
+  echo Fetch FAILED\!\!\! | tee -a $LogFile
   exit 1
 fi
-echo
-echo "***git status***"
-git status
-echo
-echo "***git rebase***"
-git rebase
-echo
-echo "***git status***"
-git status
-echo
-echo "***git log***"
-git log -1
-echo
-echo "*** Checking for successful rebase***"
+echo >> $LogFile
+echo "***git status***" | tee -a $LogFile
+git status >> $LogFile
+echo >> $LogFile
+echo "***git rebase***" | tee -a $LogFile
+git rebase >> $LogFile
+echo >> $LogFile
+echo "***git status***" | tee -a $LogFile
+git status >> $LogFile
+echo >> $LogFile
+echo "***git log***" | tee -a $LogFile
+git log -1 >> $LogFile
+echo >> $LogFile
+echo "*** Checking for successful rebase***" | tee -a $LogFile
 git log --decorate --oneline -1 | grep 'HEAD -> main' | grep origin
 if [ $? != 0 ]
 then
-  echo Rebase FAILED\!\!\!
+  echo Rebase FAILED\!\!\! | tee -a $LogFile
   exit 2
 fi
-echo
-echo "***xdg-open NicReg.ods***"
-echo
+echo >> $LogFile
+echo "***xdg-open NicReg.ods***" | tee -a $LogFile
+echo >> $LogFile
 xdg-open NicReg.ods 2>/dev/null
 sleep 10
-echo "***Waiting for spreadsheet to close..."
+echo "***Waiting for spreadsheet to close..." | tee -a $LogFile
 until [ `ps a | grep -c -e "[N]icReg.ods"` -eq 0 ];
 do
   sleep 2
 done
-echo "***Continuing***"
+echo "***Continuing***" | tee -a $LogFile
 sleep 3 
-#read -n 1 -p "Press any key to continue..."
-echo
-echo "***git status***"
-git status
-echo
-echo "***git commit -a -m \"Update `date`\"***"
-git commit -a -m "Update `date`"
+echo >> $LogFile
+echo "***git status***" | tee -a $LogFile
+git status >> $LogFile
+echo >> $LogFile
+echo "***git commit -a -m \"Update `date`\"***" | tee -a $LogFile
+git commit -a -m "Update `date`" >> $LogFile
 
 # Keep pushing until successful
 while :
 do
-  echo
-  echo "***git status***"
-  git status
-  echo
-  echo "***git push***"
-  git push
-  echo
-  echo "***git log***"
-  git log --decorate --oneline -1
+  echo >> $LogFile
+  echo "***git status***" | tee -a $LogFile
+  git status >> $LogFile
+  echo >> $LogFile
+  echo "***git push***" | tee -a $LogFile
+  git push >> $LogFile
+  echo >> $LogFile
+  echo "***git log***" | tee -a $LogFile
+  git log --decorate --oneline -1 | tee -a $LogFile
   read -n 1 -p "Press SPACE to CONTINUE, any other letter key to QUIT..." -t 15
-  echo
+  echo >> $LogFile
   if [ $REPLY ]
   then
     exit 1
   fi
-  echo
-  echo "*** Checking for successful push***"
-  git log --decorate --oneline -1 | grep 'HEAD -> main' | grep origin
+  echo >> $LogFile
+  echo "*** Checking for successful push***" | tee -a $LogFile
+  git log --decorate --oneline -1 | grep '(HEAD -> main, origin/main, origin/HEAD)' >> $LogFile
   if [ $? == 0 ]
   then
     break
   fi
 done
-echo
-echo "***git stash list***"
+echo >> $LogFile
+echo "***git stash list***" | tee -a $LogFile
+git stash list | tee -a $LogFile
 git stash list|grep 'stash@'
 if [ $? == 0 ]
 then
-  echo
-  echo "***git stash show***"
-  git stash show
+  echo >> $LogFile
+  echo "***git stash show***" | tee -a $LogFile
+  git stash show | tee -a $LogFile
   read -n 1 -p "Press SPACE to LEAVE stash, any other letter key to CLEAR stash..." -t 15
-  echo
+  echo >> $LogFile
   if [ $REPLY ]
   then
-    echo
-    echo "***git stash clear***"
-    git stash clear
+    echo >> $LogFile
+    echo "***git stash clear***" | tee -a $LogFile
+    git stash clear | tee -a $LogFile
   fi
 fi
-echo
-echo
+echo >> $LogFile
+echo >> $LogFile
+
+echo "******** End `date` ********" >> $LogFile
