@@ -7,7 +7,7 @@ touch $LogFile
 
 echo "******** Start `date` ********" >> $LogFile
 
-pushd ~/Projects/Programming/BashScript/CigeRegiC/ >> $LogFile
+pushd ~/Projects/Programming/Java/CigeRegiC/ >> $LogFile
 echo >> $LogFile
 . nuke-and-sync >> $LogFile
 err=$?
