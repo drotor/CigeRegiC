@@ -5,3 +5,7 @@ git fetch -v --all --prune && \
 git reset --hard origin/$branch && \
 git clean -fdx && \
 echo "Local repo is now identical to GitHub"
+
+if [ $# != 0 ]
+  ant clean jar
+fi
