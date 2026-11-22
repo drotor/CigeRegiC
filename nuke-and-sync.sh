@@ -7,5 +7,6 @@ git clean -fdx && \
 echo "Local repo is now identical to GitHub"
 
 if [ $# != 0 ]
+then
   ant clean jar
 fi
